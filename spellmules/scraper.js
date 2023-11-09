@@ -1,6 +1,6 @@
 function getData() {
     const urlBase = "https://corsproxy.io/?https://www.takproject.net/magelo/character.php?char=";
-    var characters = ['Oogok', 'Baeras'];
+    var characters = ['Oogok', 'Baeras', 'Bott', 'Mcbeasty'];
     var data = {}
 
     Promise.all(characters.map(character =>
@@ -29,7 +29,7 @@ function getItemListFromHtml(html) {
     for (var i = 0; i < items.length; i++) {
         var item = items[i].getElementsByTagName('a')[0];
         let itemName = item.innerHTML;
-        if (!itemName.startsWith('Spell: ')) {
+        if (itemName.startsWith('Spell: ')) {
             if (itemList[itemName]) {
                 itemList[itemName].count++;
             }
@@ -48,6 +48,7 @@ function getItemListFromHtml(html) {
 
 function outputDataToPage(data) {
     let wrapper = document.getElementById("content");
+    wrapper.innerHTML = '';
     for(let character in data) {
         wrapper.innerHTML += '<h2 class="characterName">' + character + '</h2>';
 
