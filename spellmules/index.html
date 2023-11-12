@@ -1,9 +1,17 @@
 <!DOCTYPE html>
 <html>
     <script src="scraper.js"></script>
-    <link rel="stylesheet" href="styles.css"></style>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
     <body>
-        <button onclick="getData()">Get Spell Data</button>
-        <div id="content"></div>
+        <div class="container">
+            <div class="row" style="text-align: center; margin:15px;">
+                <button id="spell-data-btn" class="btn btn-primary btn-lg" onclick="getSpellData()">Get Spells</button>
+                <button id="tradeskill-btn" class="btn btn-primary btn-lg" onclick="getTradeskillData()">Get Tradeskill Items</button>
+            </div>
+            <div class="row">
+                <div class="col-xs-12" id="content"></div>
+            </div>
+        </div>
     </body>
 </html>

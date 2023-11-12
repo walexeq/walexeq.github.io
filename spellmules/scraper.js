@@ -1,8 +1,31 @@
-function getData() {
-    const urlBase = "https://corsproxy.io/?https://www.takproject.net/magelo/character.php?char=";
-    var characters = ['Oogok', 'Baeras', 'Bott', 'Mcbeasty'];
-    var data = {}
+function getTradeskillData() {
+    const characters = [
+        'Nagalchpoistink', 'Nagbaker', 'Nagbows', 'Nagbrew', 'Nagclothes', 'Nagpottery', 'Nagshinystuff', 'Nagsmith',
+        'Gemsdaddy', 'Incharge', 'Overflow', 'Overflowtwo', 'Overflowthree', 'Overflowfour', 'Overflowfive', 'Slushfund'];
 
+    getData(characters, document.getElementById('tradeskill-btn'));
+}
+
+function getSpellData() {
+    const characters = [
+        'Beastlordgirl', 'Clericgirl', 'Enchantergirl', 'Magiciangirl', 'Necromancergirl', 'Rangergirl', 'Shamangirl', 'Wizardgirl',
+        'Bardboy', 'Clericboy', 'Druidboy', 'Enchanterboy', 'Magicianboy', 'Necromancerboy', 'Paladinboy', 'Shamanboy',
+        'Miscone', 'Misctwo', 'Miscthree', 'Miscfour', 'Miscfive', 'Miscsix', 'Miscseven', 'Misceight'];
+
+    getData(characters, document.getElementById('spell-data-btn'));
+}
+
+function getData(characters, clickedBtn) {
+    clickedBtn.disabled = true;
+    setTimeout(() => {
+        clickedBtn.disabled = false;
+    }, 30000)
+
+    const urlBase = "https://corsproxy.io/?https://www.takproject.net/magelo/character.php?char=";
+    const wrapper = document.getElementById("content");
+    wrapper.innerHTML = '<h2>Loading, Please wait...</h2>'
+    
+    let data = {}
     Promise.all(characters.map(character =>
         fetch(urlBase + character, {
             method: "GET"
@@ -20,41 +43,60 @@ function getData() {
 }
 
 function getItemListFromHtml(html) {
-    var el = document.createElement('html');
+    let el = document.createElement('html');
     el.innerHTML = html;
     
-    var itemList = {};
-    var items = el.getElementsByClassName('ItemTitleMid');
+    const allItems = el.getElementsByClassName('ItemOuter');
+    let items = [];
+    for (let i = 0 ; i < allItems.length; i++) {
+        const slotNum = parseInt(allItems[i].id.split('slot')[1]);
 
-    for (var i = 0; i < items.length; i++) {
-        var item = items[i].getElementsByTagName('a')[0];
-        let itemName = item.innerHTML;
-        if (itemName.startsWith('Spell: ')) {
-            if (itemList[itemName]) {
-                itemList[itemName].count++;
-            }
-            else {
-                itemList[item.innerHTML] = {
-                    itemName: itemName,
-                    url: item.href,
-                    count: 1
-                };
-            }
+        // get items not currently equipped
+        if (slotNum && slotNum > 21) {
+            items.push(allItems[i].getElementsByClassName('ItemTitleMid')[0]);
         }
     }
 
-    return itemList;
+    let itemDict = {};
+    for (let i = 0; i < items.length; i++) {
+        let item = items[i].getElementsByTagName('a')[0];
+        let itemName = item.innerHTML;
+        if (itemName == 'Deluxe Toolbox')
+            continue;
+
+        if (itemDict[itemName]) {
+            itemDict[itemName].count++;
+        }
+        else {
+            itemDict[item.innerHTML] = {
+                itemName: itemName,
+                url: item.href,
+                count: 1
+            };
+        }
+    }
+    return itemDict;
 }
 
-function outputDataToPage(data) {
-    let wrapper = document.getElementById("content");
+function outputDataToPage(characterData) {
+    const wrapper = document.getElementById("content");
     wrapper.innerHTML = '';
-    for(let character in data) {
-        wrapper.innerHTML += '<h2 class="characterName">' + character + '</h2>';
 
-        for(let item in data[character]) {
-            var x = '<p class="item"><a href="' + data[character][item].url + '">' + data[character][item].itemName + "</a> (" + data[character][item].count + ")" + '</p>'
-            wrapper.innerHTML += x;
+    sortedCharacters = Object.entries(characterData).sort();
+    for (let i = 0 ; i < sortedCharacters.length ; i++) {
+        const data = sortedCharacters[i][1];
+       
+        const itemCount = Object.entries(data)
+            .flatMap(d => d[1].count)
+            .reduce((x, y) => {
+                return x + y;
+            }, 0);
+
+        wrapper.innerHTML += '<h2 class="characterName">' + sortedCharacters[i][0] + ' (' + (160 - itemCount) + ' empty slots)</h2>';
+        
+        const sortedInventory = Object.entries(data).sort();
+        for(let j = 0 ; j < sortedInventory.length ; j++) {
+            wrapper.innerHTML += '<p class="item"><a href="' + sortedInventory[j][1].url + '">' + sortedInventory[j][1].itemName + "</a> (" + sortedInventory[j][1].count + ")" + '</p>'
         }
     }
 }
