@@ -8,9 +8,9 @@ function getTradeskillData() {
 
 function getSpellData() {
     const characters = [
-        'Beastlordgirl', 'Clericgirl', 'Enchantergirl', 'Magiciangirl', 'Necromancergirl', 'Rangergirl', 'Shamangirl', 'Wizardgirl',
+        'Beastlordgirl', 'Shadoknightgirl', 'Enchantergirl', 'Magiciangirl', 'Necromancergirl', 'Rangergirl', 'Wizardgirl',
         'Bardboy', 'Clericboy', 'Druidboy', 'Enchanterboy', 'Magicianboy', 'Necromancerboy', 'Paladinboy', 'Shamanboy',
-        'Miscone', 'Misctwo', 'Miscthree', 'Miscfour', 'Miscfive', 'Miscsix', 'Miscseven', 'Misceight'];
+        'Miscone', 'Misctwo', 'Miscthree', 'Miscfour', 'Miscfive', 'Miscsix', 'Miscseven', 'Misceight', 'Armourgirl'];
 
     getData(characters, document.getElementById('spell-data-btn'));
 }
