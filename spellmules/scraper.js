@@ -33,7 +33,7 @@ function getData(characters, clickedBtn) {
         clickedBtn.disabled = false;
     }, 30000)
 
-    const urlBase = "https://corsproxy.io/?https://www.takproject.net/magelo/character.php?char=";
+    const urlBase = "https://api.cors.lol/?url=https://www.takproject.net/magelo/character.php?char=";
     const wrapper = document.getElementById("content");
     wrapper.innerHTML = '<h2>Loading, Please wait...</h2>'
     
